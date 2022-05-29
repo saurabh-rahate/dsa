@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "ts-node": "^10.4.0"
+  },
+  "scripts": {
+    "start": "ts-node ./src/main/typescript/hello.ts",
+    "start-js": "ts-node ./src/main/javascript/hello.js"
+  }
+}
