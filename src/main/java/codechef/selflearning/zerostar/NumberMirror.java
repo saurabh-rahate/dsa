@@ -1,4 +1,4 @@
-package codechef.selflearning;
+package codechef.selflearning.zerostar;
 
 import java.util.Scanner;
 
