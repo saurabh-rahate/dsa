@@ -1,23 +1,23 @@
-package codechef.selflearning.onestar;
+package codechef.selflearning.onestar.basic;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-class SMOL {
+class CHFSPL {
     public static void main(String[] args) throws NumberFormatException, IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         int t = Integer.parseInt(br.readLine());
         while (t-- > 0) {
-            String[] nk = br.readLine().split(" ");
+            String[] abc = br.readLine().split(" ");
 
-            int n = Integer.parseInt(nk[0]);
-            int k = Integer.parseInt(nk[1]);
+            int a = Integer.parseInt(abc[0]);
+            int b = Integer.parseInt(abc[1]);
+            int c = Integer.parseInt(abc[2]);
 
-            if (k == 0)
-                System.out.println(n);
-            else
-                System.out.println(n % k);
+            int sum = a + b + c - Math.min(a, Math.min(b, c));
+
+            System.out.println(sum);
         }
     }
 }

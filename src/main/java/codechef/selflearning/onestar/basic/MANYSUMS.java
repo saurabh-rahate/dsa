@@ -1,4 +1,4 @@
-package codechef.selflearning.onestar;
+package codechef.selflearning.onestar.basic;
 
 import java.io.BufferedReader;
 import java.io.IOException;

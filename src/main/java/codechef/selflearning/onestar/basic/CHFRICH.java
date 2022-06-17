@@ -1,16 +1,17 @@
-package codechef.selflearning.onestar;
+package codechef.selflearning.onestar.basic;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-class HOOPS {
+class CHFRICH {
     public static void main(String[] args) throws NumberFormatException, IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         int t = Integer.parseInt(br.readLine());
         while (t-- > 0) {
-            int n = Integer.parseInt(br.readLine());
-            System.out.println((n + 1) / 2);
+            String[] abx = br.readLine().split(" ");
+            int years = (Integer.parseInt(abx[1]) - Integer.parseInt(abx[0])) / Integer.parseInt(abx[2]);
+            System.out.println(years);
         }
     }
 }
