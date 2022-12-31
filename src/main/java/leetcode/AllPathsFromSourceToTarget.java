@@ -27,6 +27,7 @@ public class AllPathsFromSourceToTarget {
         stack.add(mapOfNodes.lastEntry().getKey());
         backTrack(stack);
 
+        System.out.println(output);
         return output;
     }
 
@@ -36,13 +37,12 @@ public class AllPathsFromSourceToTarget {
         while (connectedNodes != null && i < connectedNodes.size()) {
             int connectedNode = connectedNodes.get(i++);
             List<Integer> newStack = new ArrayList<>(stack);
+            newStack.add(connectedNode);
             if (connectedNode == 0) {
-                newStack.add(0);
                 List<Integer> result = new ArrayList<>(newStack);
                 Collections.reverse(result);
                 output.add(result);
             } else {
-                newStack.add(connectedNode);
                 backTrack(newStack);
             }
         }
