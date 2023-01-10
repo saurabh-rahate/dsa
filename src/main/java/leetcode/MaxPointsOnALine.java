@@ -1,11 +1,10 @@
 package leetcode;
 
-import java.util.Comparator;
 import java.util.HashMap;
 
 public class MaxPointsOnALine {
     public static void main(String[] args) {
-//        System.out.println(maxPoints(new int[][]{{1, 1}, {2, 2}, {3, 3}}));
+        System.out.println(maxPoints(new int[][]{{1, 1}, {2, 2}, {3, 3}}));
         System.out.println(maxPoints(new int[][]{{1, 1}, {3, 2}, {5, 3}, {4, 1}, {2, 3}, {1, 4}}));
     }
 
@@ -29,8 +28,8 @@ public class MaxPointsOnALine {
                 }
             }
 
-            int temp = map.values().stream().map(c -> c.count).max(Integer::compare).orElseGet(() -> 0);
-            if (temp > maxSlopes) maxSlopes = temp;
+            int maxSlopesInMap = map.values().stream().map(c -> c.count).max(Integer::compare).orElse(0);
+            if (maxSlopesInMap > maxSlopes) maxSlopes = maxSlopesInMap;
             map = new HashMap<>();
         }
         return maxSlopes + 1;
