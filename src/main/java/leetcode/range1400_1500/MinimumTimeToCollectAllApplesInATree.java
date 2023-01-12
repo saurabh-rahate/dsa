@@ -31,7 +31,7 @@ public class MinimumTimeToCollectAllApplesInATree {
                 childNode = parentNode;
                 parentNode = temp;
             }
-            parentNode.addChild(childNode);
+            childNode.addParent(parentNode);
         }
 
         for (int i = 0; i < n; i++) {
@@ -47,7 +47,6 @@ public class MinimumTimeToCollectAllApplesInATree {
 
     static class UTreeNode {
         public UTreeNode parent;
-        public UTreeNode child;
 
         public int val;
 
@@ -55,16 +54,14 @@ public class MinimumTimeToCollectAllApplesInATree {
             this.val = val;
         }
 
-        public void addChild(UTreeNode node) {
-            this.child = node;
-            node.parent = this;
+        public void addParent(UTreeNode node) {
+            this.parent = node;
         }
 
         @Override
         public String toString() {
             String res = "" + val + "-";
-            res += parent != null ? parent.val + "-" : "NULL-";
-            res += child != null ? child.val : "NULL";
+            res += parent != null ? parent.val + "-" : "NULL";
             return res;
         }
     }
