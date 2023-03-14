@@ -5,37 +5,29 @@ public class SearchInRotatedSortedArray {
     public static void main(String[] args) {
         SearchInRotatedSortedArray obj = new SearchInRotatedSortedArray();
         System.out.println(obj.search(new int[]{4, 5, 6, 7, 0, 1, 2}, 0));
+        System.out.println(obj.search(new int[]{4, 5, 6, 7, 0, 1, 2}, 3));
+        System.out.println(obj.search(new int[]{1, 3}, 3));
     }
 
-    private static int length;
-
-    protected static void initialize(int l) {
-        length = l;
-    }
+    private static int result;
 
     public int search(int[] nums, int target) {
-        initialize(nums.length);
-        int start = 0;
-        int end = nums.length * 2 - 1;
-        int mid = start + (end - start) / 2;
-
-        int index = searchNumber(start, end, nums, target);
-        return 0;
+        result = -1;
+        searchBinary(0, nums.length - 1, nums, target);
+        return result;
     }
 
-    private int searchNumber(int start, int end, int[] nums, int tartget) {
+    private void searchBinary(int start, int end, int[] nums, int target) {
+        if(end < start) return;
         int mid = start + (end - start) / 2;
-        int index = getIndex(mid);
-        if (nums[index] == tartget) return index;
-        else {
-            if (start == end) if (tartget != nums[index]) return -1;
-            if (tartget < nums[index]) return searchNumber(start, mid, nums, tartget);
-            else return searchNumber(mid, end, nums, tartget);
+        if (nums[mid] == target) {
+            result = mid;
+        } else {
+            if (start == end) return;
+            if (result == -1)
+                searchBinary(start, mid - 1, nums, target);
+            if (result == -1)
+                searchBinary(mid + 1, end, nums, target);
         }
-    }
-
-    protected int getIndex(int i) {
-        if (i > length - 1) return i - length;
-        else return i;
     }
 }
