@@ -1,8 +1,8 @@
 package leetcode.range200_300;
 
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.Arrays;
+import java.util.Objects;
+import java.util.function.Predicate;
 
 public class DesignAddAndSearchWordsDataStructure {
     public static void main(String[] args) {
@@ -51,48 +51,30 @@ class WordDictionary {
         if (Arrays.stream(dictionary).noneMatch(Objects::nonNull)) return false;
 
         char letter = word.charAt(0);
-
-        if (word.length() == 1) {
-            if (letter == '.') return Arrays.stream(dictionary).filter(Objects::nonNull).anyMatch(n -> n.isEnd);
-            Node node = dictionary[letter - 'a'];
-            if (node == null) return false;
-            else return node.letter == letter && node.isEnd;
-        }
-
         if (letter == '.') {
-            return Arrays.stream(dictionary).filter(Objects::nonNull).anyMatch(n -> search(n, 1, word));
+            Predicate<Node> predicate = word.length() == 1 ? n -> n.isEnd : n -> search(n, 1, word);
+            return Arrays.stream(dictionary).filter(Objects::nonNull).anyMatch(predicate);
         } else {
-            Node node = dictionary[word.charAt(0) - 'a'];
-            if (node == null) return false;
-            else return search(node, 1, word);
+            Node node = dictionary[letter - 'a'];
+            if (word.length() == 1) {
+                return node != null && node.letter == letter && node.isEnd;
+            } else {
+                return node != null && search(node, 1, word);
+            }
         }
     }
 
     private boolean search(Node node, int index, String word) {
         char letter = word.charAt(index);
         if (letter == '.') {
-            if (index == word.length() - 1) {
-                return Arrays.stream(node.nextLetters)
-                        .filter(Objects::nonNull)
-                        .anyMatch(n -> n.isEnd);
-            } else {
-                return Arrays.stream(node.nextLetters)
-                        .filter(Objects::nonNull)
-                        .anyMatch(n -> search(n, index + 1, word));
-            }
+            Predicate<Node> predicate = index == word.length() - 1 ? n -> n.isEnd : n -> search(n, index + 1, word);
+            return Arrays.stream(node.nextLetters).filter(Objects::nonNull).anyMatch(predicate);
         } else {
-
+            Node newNode = node.nextLetters[letter - 'a'];
             if (index == word.length() - 1) {
-                Node newNode = node.nextLetters[letter - 'a'];
-                if (newNode == null) return false;
-                if (letter == newNode.letter) return newNode.isEnd;
-                else return false;
+                return newNode != null && letter == newNode.letter && newNode.isEnd;
             } else {
-                Node newNode = node.nextLetters[letter - 'a'];
-                if (newNode == null) return false;
-                if (letter == newNode.letter) {
-                    return search(newNode, index + 1, word);
-                } else return false;
+                return newNode != null && letter == newNode.letter && search(newNode, index + 1, word);
             }
         }
     }
