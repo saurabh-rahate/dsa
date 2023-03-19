@@ -24,86 +24,87 @@ public class DesignAddAndSearchWordsDataStructure {
 
 class WordDictionary {
 
-    HashSet<Node> dictionary;
+    Node[] dictionary;
 
     public WordDictionary() {
-        this.dictionary = new HashSet<>();
+        this.dictionary = new Node[26];
     }
 
     public void addWord(String word) {
-        Node current = null;
-        for (int i = 0; i < word.length(); i++) {
-            char letter = word.charAt(i);
-            if (i == 0) {
-                current = this.dictionary
-                        .stream()
-                        .filter(node -> node.letter == letter)
-                        .findFirst()
-                        .orElseGet(() -> {
-                            Node newNode = new Node(letter);
-                            dictionary.add(newNode);
-                            return newNode;
-                        });
+        char letter = word.charAt(0);
+        Node current = dictionary[letter - 'a'] == null ? new Node(letter) : dictionary[letter - 'a'];
+        dictionary[letter - 'a'] = current;
+        for (int i = 1; i < word.length(); i++) {
+            letter = word.charAt(i);
+            if (current.nextLetters[letter - 'a'] == null) {
+                Node newNode = new Node(letter);
+                current.nextLetters[letter - 'a'] = newNode;
+                current = newNode;
             } else {
-                Node finalCurrent = current;
-                current = current.nextLetters
-                        .stream()
-                        .filter(node -> node.letter == letter)
-                        .findFirst()
-                        .orElseGet(() -> {
-                            Node newNode = new Node(letter);
-                            finalCurrent.nextLetters.add(newNode);
-                            return newNode;
-                        });
+                current = current.nextLetters[letter - 'a'];
             }
         }
         current.isEnd = true;
     }
 
     public boolean search(String word) {
-        Stream<Node> nodes = null;
-        for (int i = 0; i < word.length(); i++) {
-            char letter = word.charAt(i);
-            if (i == 0) {
-                if (letter == '.') {
-                    nodes = dictionary.stream();
-                } else {
-                    if (dictionary.stream().noneMatch(node -> node.letter == letter)) return false;
-                    nodes = dictionary
-                            .stream()
-                            .filter(node -> node.letter == letter);
-                }
-            } else {
-                if (letter == '.') {
-                    nodes = nodes
-                            .map(node -> node.nextLetters)
-                            .flatMap(HashSet::stream);
-                } else {
-                    nodes = nodes
-                            .map(node -> node.nextLetters)
-                            .flatMap(HashSet::stream)
-                            .filter(node -> node.letter == letter);
-                }
-            }
-//            nodes.findAny().isPresent()
-//            if (!nodes.findAny().isPresent()) return false;
+        if (Arrays.stream(dictionary).noneMatch(Objects::nonNull)) return false;
 
+        char letter = word.charAt(0);
+
+        if (word.length() == 1) {
+            if (letter == '.') return Arrays.stream(dictionary).filter(Objects::nonNull).anyMatch(n -> n.isEnd);
+            Node node = dictionary[letter - 'a'];
+            if (node == null) return false;
+            else return node.letter == letter && node.isEnd;
         }
-        return nodes.anyMatch(node -> node.isEnd);
+
+        if (letter == '.') {
+            return Arrays.stream(dictionary).filter(Objects::nonNull).anyMatch(n -> search(n, 1, word));
+        } else {
+            Node node = dictionary[word.charAt(0) - 'a'];
+            if (node == null) return false;
+            else return search(node, 1, word);
+        }
     }
 
-    private int getIndex(char letter) {
-        return letter - 'a';
+    private boolean search(Node node, int index, String word) {
+        char letter = word.charAt(index);
+        if (letter == '.') {
+            if (index == word.length() - 1) {
+                return Arrays.stream(node.nextLetters)
+                        .filter(Objects::nonNull)
+                        .anyMatch(n -> n.isEnd);
+            } else {
+                return Arrays.stream(node.nextLetters)
+                        .filter(Objects::nonNull)
+                        .anyMatch(n -> search(n, index + 1, word));
+            }
+        } else {
+
+            if (index == word.length() - 1) {
+                Node newNode = node.nextLetters[letter - 'a'];
+                if (newNode == null) return false;
+                if (letter == newNode.letter) return newNode.isEnd;
+                else return false;
+            } else {
+                Node newNode = node.nextLetters[letter - 'a'];
+                if (newNode == null) return false;
+                if (letter == newNode.letter) {
+                    return search(newNode, index + 1, word);
+                } else return false;
+            }
+        }
     }
 
     static class Node {
         char letter;
-        HashSet<Node> nextLetters;
+        Node[] nextLetters;
         boolean isEnd;
 
         public Node(char letter) {
             this.letter = letter;
-            nextLetters = new HashSet<>();
+            nextLetters = new Node[26];
             isEnd = false;
         }
 
