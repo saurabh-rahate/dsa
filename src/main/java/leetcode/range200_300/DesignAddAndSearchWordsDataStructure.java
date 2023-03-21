@@ -24,44 +24,34 @@ public class DesignAddAndSearchWordsDataStructure {
 
 class WordDictionary {
 
-    Node[] dictionary;
+    Node dictionary;
 
     public WordDictionary() {
-        this.dictionary = new Node[26];
+        this.dictionary = new Node('*');
     }
 
     public void addWord(String word) {
-        char letter = word.charAt(0);
-        Node current = dictionary[letter - 'a'] == null ? new Node(letter) : dictionary[letter - 'a'];
-        dictionary[letter - 'a'] = current;
-        for (int i = 1; i < word.length(); i++) {
-            letter = word.charAt(i);
-            if (current.nextLetters[letter - 'a'] == null) {
+        Node current = dictionary;
+        for (int i = 0; i < word.length(); i++) {
+            char letter = word.charAt(i);
+            if (current.nextLetters[getIndex(letter)] == null) {
                 Node newNode = new Node(letter);
-                current.nextLetters[letter - 'a'] = newNode;
+                current.nextLetters[getIndex(letter)] = newNode;
                 current = newNode;
             } else {
-                current = current.nextLetters[letter - 'a'];
+                current = current.nextLetters[getIndex(letter)];
             }
         }
         current.isEnd = true;
     }
 
-    public boolean search(String word) {
-        if (Arrays.stream(dictionary).noneMatch(Objects::nonNull)) return false;
+    private static int getIndex(char letter) {
+        return letter - 'a';
+    }
 
-        char letter = word.charAt(0);
-        if (letter == '.') {
-            Predicate<Node> predicate = word.length() == 1 ? n -> n.isEnd : n -> search(n, 1, word);
-            return Arrays.stream(dictionary).filter(Objects::nonNull).anyMatch(predicate);
-        } else {
-            Node node = dictionary[letter - 'a'];
-            if (word.length() == 1) {
-                return node != null && node.letter == letter && node.isEnd;
-            } else {
-                return node != null && search(node, 1, word);
-            }
-        }
+    public boolean search(String word) {
+        if (Arrays.stream(dictionary.nextLetters).noneMatch(Objects::nonNull)) return false;
+        return search(dictionary, 0, word);
     }
 
     private boolean search(Node node, int index, String word) {
@@ -70,11 +60,11 @@ class WordDictionary {
             Predicate<Node> predicate = index == word.length() - 1 ? n -> n.isEnd : n -> search(n, index + 1, word);
             return Arrays.stream(node.nextLetters).filter(Objects::nonNull).anyMatch(predicate);
         } else {
-            Node newNode = node.nextLetters[letter - 'a'];
+            node = node.nextLetters[getIndex(letter)];
             if (index == word.length() - 1) {
-                return newNode != null && letter == newNode.letter && newNode.isEnd;
+                return node != null && letter == node.letter && node.isEnd;
             } else {
-                return newNode != null && letter == newNode.letter && search(newNode, index + 1, word);
+                return node != null && letter == node.letter && search(node, index + 1, word);
             }
         }
     }
@@ -88,21 +78,6 @@ class WordDictionary {
             this.letter = letter;
             nextLetters = new Node[26];
             isEnd = false;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-
-            Node node = (Node) o;
-
-            return letter == node.letter;
-        }
-
-        @Override
-        public int hashCode() {
-            return letter;
         }
     }
 }
